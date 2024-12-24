@@ -1,0 +1,172 @@
+brute force approach:
+
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int ans[] = new int[n];
+        
+        for(int i = 0; i < n; i++) {
+            int pro = 1;
+            for(int j = 0; j < n; j++) {
+                if(i == j) continue;
+                pro *= nums[j];
+            }
+            ans[i] = pro;
+        }
+        
+        return ans;
+    }
+}
+
+
+explanation :
+
+nums = [1, 2, 3, 4];
+Iteration Details:
+For i = 0:
+Initialize pro = 1.
+Inner loop (j):
+Skip j = 0 because i == j.
+Multiply pro with nums[1] = 2 → pro = 1 * 2 = 2.
+Multiply pro with nums[2] = 3 → pro = 2 * 3 = 6.
+Multiply pro with nums[3] = 4 → pro = 6 * 4 = 24.
+Store pro = 24 in ans[0]: ans = [24, 0, 0, 0].
+For i = 1:
+Initialize pro = 1.
+Inner loop (j):
+Multiply pro with nums[0] = 1 → pro = 1 * 1 = 1.
+Skip j = 1 because i == j.
+Multiply pro with nums[2] = 3 → pro = 1 * 3 = 3.
+Multiply pro with nums[3] = 4 → pro = 3 * 4 = 12.
+Store pro = 12 in ans[1]: ans = [24, 12, 0, 0].
+For i = 2:
+Initialize pro = 1.
+Inner loop (j):
+Multiply pro with nums[0] = 1 → pro = 1 * 1 = 1.
+Multiply pro with nums[1] = 2 → pro = 1 * 2 = 2.
+Skip j = 2 because i == j.
+Multiply pro with nums[3] = 4 → pro = 2 * 4 = 8.
+Store pro = 8 in ans[2]: ans = [24, 12, 8, 0].
+For i = 3:
+Initialize pro = 1.
+Inner loop (j):
+Multiply pro with nums[0] = 1 → pro = 1 * 1 = 1.
+Multiply pro with nums[1] = 2 → pro = 1 * 2 = 2.
+Multiply pro with nums[2] = 3 → pro = 2 * 3 = 6.
+Skip j = 3 because i == j.
+Store pro = 6 in ans[3]: ans = [24, 12, 8, 6].
+Final Output:
+java
+Copy code
+ans = [24, 12, 8, 6];
+Inefficiency:
+This implementation works but is inefficient because of the 
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ ) complexity due to the nested loop.
+
+
+
+better approach:
+
+
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int[] result=new int[nums.length];
+
+        Arrays.fill(result,1);
+        int pre=1,post=1;
+        for(int i=0;i<nums.length;i++){
+            result[i]=pre;
+            pre=nums[i]*pre;
+        }
+        for(int i=nums.length-1;i>=0;i--){
+            result[i]=result[i]*post;
+            post=post*nums[i];
+        }
+    
+        return result;
+}
+}
+
+Example Execution for nums = [1, 2, 3, 4]:
+Initial pre = 1, result = [1, 1, 1, 1].
+Step-by-step:
+i = 0: result[0] = pre = 1, pre = 1 * 1 = 1.
+i = 1: result[1] = pre = 1, pre = 2 * 1 = 2.
+i = 2: result[2] = pre = 2, pre = 3 * 2 = 6.
+i = 3: result[3] = pre = 6, pre = 4 * 6 = 24.
+After this loop: result = [1, 1, 2, 6].
+java
+Copy code
+for (int i = nums.length - 1; i >= 0; i--) {
+    result[i] = result[i] * post;
+    post = post * nums[i];
+}
+Purpose: Second pass (right to left) to calculate the postfix product:
+For each index i, the current value of post (postfix product of all elements to the right of i) is multiplied with the existing value in result[i].
+Updates post to include the current element nums[i].
+Example Execution for nums = [1, 2, 3, 4]:
+Initial post = 1, result = [1, 1, 2, 6].
+Step-by-step:
+i = 3: result[3] = 6 * post = 6 * 1 = 6, post = 1 * 4 = 4.
+i = 2: result[2] = 2 * post = 2 * 4 = 8, post = 4 * 3 = 12.
+i = 1: result[1] = 1 * post = 1 * 12 = 12, post = 12 * 2 = 24.
+i = 0: result[0] = 1 * post = 1 * 24 = 24, post = 24 * 1 = 24.
+After this loop: result = [24, 12, 8, 6].
+java
+Copy code
+return result;
+Purpose: Returns the result array which contains the product of all elements except the one at each index.
+Example Execution Summary:
+Input:
+java
+Copy code
+nums = [1, 2, 3, 4];
+Prefix Pass:
+Prefix values are accumulated left-to-right:
+java
+Copy code
+result = [1, 1, 2, 6];  // (1 for index 0, prefix = [1, 1, 2, 6])
+Postfix Pass:
+Postfix values are accumulated right-to-left:
+java
+Copy code
+result = [24, 12, 8, 6];  // (24 for index 0, combining prefix * postfix)
+Output:
+java
+Copy code
+result = [24, 12, 8, 6];
+
+
+
+question:
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+You must write an algorithm that runs in O(n) time and without using the division operation.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4]
+Output: [24,12,8,6]
+Example 2:
+
+Input: nums = [-1,1,0,-3,3]
+Output: [0,0,9,0,0]
+ 
+
+Constraints:
+
+2 <= nums.length <= 105
+-30 <= nums[i] <= 30
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+ 
