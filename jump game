@@ -1,0 +1,114 @@
+You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+
+Return true if you can reach the last index, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: nums = [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+Example 2:
+
+Input: nums = [3,2,1,0,4]
+Output: false
+Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+
+
+solution:
+class Solution {
+    public boolean canJump(int[] nums) {
+        int stepsleft=nums[0];
+        for(int i=1;i<nums.length;i++){
+            stepsleft--;
+            if(stepsleft < 0) return false;
+            if( i== nums.length-1) return true;
+            if(stepsleft<nums[i]){
+                stepsleft=nums[i];
+            }
+        }
+        return true;
+    }
+}
+
+ Let's break it down **step by step** using diagrams to understand the logic clearly.
+
+---
+
+## **Example 1**
+### **Input:**
+```plaintext
+nums = [2,3,1,1,4]
+```
+Each index represents a position, and the value at that index represents the **maximum jump length** from that position.
+
+### **Step-by-Step Execution**
+#### **Initial State**
+| Index | Value (Max Jump) | Steps Left | Can Move? |
+|--------|------|------------|----------|
+| **0** | 2  | 2 | ✅ Start here |
+| **1** | 3  | 2-1 = 1 | ✅ |
+| **2** | 1  | 3 (Updated) | ✅ |
+| **3** | 1  | 2-1 = 1 | ✅ |
+| **4** | 4  | 1-1 = 0 | ✅ **(Reached Last Index)** |
+
+### **Path Taken**
+1. Start at index `0`, we can jump up to **2** steps.
+2. Jump **1 step** to index `1` (We still have `stepsLeft = 1`).
+3. At index `1`, we can jump up to **3** steps → **update stepsLeft** to `3`.
+4. Jump **3 steps** from index `1` to **index `4` (last index)**.
+5. ✅ **Reached the last index → Return `true`**.
+
+### **Visual Representation**
+```
+Index:   0   1   2   3   4
+Nums:    2   3   1   1   4
+Path:    →   →   →   →  ✅ (Reached)
+```
+🔹 **Output:** `true`
+
+---
+
+## **Example 2**
+### **Input:**
+```plaintext
+nums = [3,2,1,0,4]
+```
+Each index represents a position, and the value at that index represents the **maximum jump length** from that position.
+
+### **Step-by-Step Execution**
+#### **Initial State**
+| Index | Value (Max Jump) | Steps Left | Can Move? |
+|--------|------|------------|----------|
+| **0** | 3  | 3 | ✅ Start here |
+| **1** | 2  | 3-1 = 2 | ✅ |
+| **2** | 1  | 2-1 = 1 | ✅ |
+| **3** | 0  | 1-1 = 0 | ❌ Stuck here |
+| **4** | 4  | ❌ | ❌ Cannot Reach |
+
+### **Path Taken**
+1. Start at index `0`, we can jump up to **3** steps.
+2. Move to index `1`, `stepsLeft = 2`.
+3. Move to index `2`, `stepsLeft = 1`.
+4. Move to index `3`, `stepsLeft = 0` **(No jumps left)**.
+5. **Stuck at index `3` because it has `0` jump length**.
+6. **Cannot reach the last index** → **Return `false`**.
+
+### **Visual Representation**
+```
+Index:   0   1   2   3   4
+Nums:    3   2   1   0   4
+Path:    →   →   →   X  (Stuck)
+```
+🔹 **Output:** `false`
+
+---
+
+### **Key Observations**
+- **If we ever run out of steps before reaching the last index, return `false`.**
+- **Always update `stepsLeft` to the max possible jump at each step.**
+- **If at any point `stepsLeft == 0` before the last index, we are stuck.**
+
+Would you like any more clarifications? 🚀
+
