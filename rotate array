@@ -1,0 +1,136 @@
+problem:
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+
+
+
+class Solution {
+    public void rotate(int[] nums, int k) {
+    k %= nums.length;
+    reverse(nums, 0, nums.length - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, nums.length - 1);
+}
+
+public void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+        int temp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = temp;
+        start++;
+        end--;
+    }
+}
+}
+ explanation:
+
+
+## **Code Breakdown**
+
+### **Method: `rotate(int[] nums, int k)`**
+```java
+public void rotate(int[] nums, int k) {
+```
+- This method rotates the array `nums` to the **right** by `k` positions.
+
+---
+
+### **Step 1: Normalize `k`**
+```java
+k %= nums.length;
+```
+- Ensures `k` does not exceed `nums.length`, because rotating an array of length `n` by `n` or `2n` positions results in the same array.
+- Example: If `nums.length = 7` and `k = 10`, then `k = 10 % 7 = 3`.
+
+---
+
+### **Step 2: Reverse the Entire Array**
+```java
+reverse(nums, 0, nums.length - 1);
+```
+- Reverses the entire array, so the order of elements is flipped.
+
+---
+
+### **Step 3: Reverse the First `k` Elements**
+```java
+reverse(nums, 0, k - 1);
+```
+- Reverses the first `k` elements, restoring their relative order.
+
+---
+
+### **Step 4: Reverse the Remaining Elements**
+```java
+reverse(nums, k, nums.length - 1);
+```
+- Reverses the last `n-k` elements, restoring their relative order.
+
+---
+
+## **Method: `reverse(int[] nums, int start, int end)`**
+```java
+public void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+        int temp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = temp;
+        start++;
+        end--;
+    }
+}
+```
+- Uses the **two-pointer approach** to swap elements from both ends, moving towards the center.
+- Runs in **O(n)** time.
+
+---
+
+## **Example Walkthrough**
+### **Input:**
+```java
+nums = [1, 2, 3, 4, 5, 6, 7]
+k = 3
+```
+### **Step 1: Normalize `k`**
+```java
+k = 3 % 7 = 3
+```
+
+### **Step 2: Reverse Entire Array**
+Before:  
+`[1, 2, 3, 4, 5, 6, 7]`  
+After reversing:  
+`[7, 6, 5, 4, 3, 2, 1]`
+
+### **Step 3: Reverse First `k=3` Elements**
+Before:  
+`[7, 6, 5, 4, 3, 2, 1]`  
+After reversing first 3 elements:  
+`[5, 6, 7, 4, 3, 2, 1]`
+
+### **Step 4: Reverse Remaining Elements**
+Before:  
+`[5, 6, 7, 4, 3, 2, 1]`  
+After reversing last 4 elements:  
+`[5, 6, 7, 1, 2, 3, 4]`
+
+### **Output:**
+```java
+[5, 6, 7, 1, 2, 3, 4]
+```
+
+---
+
